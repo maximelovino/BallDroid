@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/difficulty_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/easy_difficulty_button"
+            android:title="@string/difficulty_easy"
+            android:checked="true" />
+        <item
+            android:id="@+id/medium_difficulty_button"
+            android:title="@string/difficulty_medium" />
+        <item
+            android:id="@+id/hard_difficulty_button"
+            android:title="@string/difficulty_hard" />
+    </group>
+    <item
+        android:id="@+id/about_button"
+        android:title="@string/about" />
+</menu>

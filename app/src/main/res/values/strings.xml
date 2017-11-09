@@ -3,4 +3,8 @@
     <string name="welcomeTitle">Welcome to BallDroid</string>
     <string name="start_game">Start Game</string>
     <string name="high_scores">High Scores</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="about">About this game</string>
 </resources>
