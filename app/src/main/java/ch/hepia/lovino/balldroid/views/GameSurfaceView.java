@@ -4,26 +4,45 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+
+import java.util.ArrayList;
+
+import ch.hepia.lovino.balldroid.controllers.GameController;
+import ch.hepia.lovino.balldroid.models.Object;
 
 
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
     private DrawingThread thread;
     private Paint paint;
-    private RectF rect = new RectF(100, 100, 580, 800);
+    private GameController controller;
 
-    public GameSurfaceView(Context context) {
+    public GameSurfaceView(Context context, GameController controller) {
         super(context);
+        this.controller = controller;
         holder = getHolder();
         holder.addCallback(this);
         thread = new DrawingThread();
-        paint = new Paint();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         paint.setStyle(Paint.Style.FILL);
+
+    }
+
+
+    public int getSurfaceWidth() {
+        return this.holder.getSurfaceFrame().width();
+    }
+
+    public int getSurfaceHeight() {
+        return this.holder.getSurfaceFrame().height();
+    }
+
+    public float getDPI() {
+        return getResources().getDisplayMetrics().densityDpi;
     }
 
     /**
@@ -34,11 +53,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.i("SIZE", canvas.getWidth() + "," + canvas.getHeight());
-        canvas.drawColor(Color.RED);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(30);
-        canvas.drawRect(rect, paint);
+        canvas.drawColor(Color.WHITE);
+        paint.setColor(Color.BLACK);
     }
 
     /**
@@ -95,7 +111,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     private class DrawingThread extends Thread {
-        boolean keepDrawing = true;
+        private boolean keepDrawing = true;
 
         @Override
         public void run() {

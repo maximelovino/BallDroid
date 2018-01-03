@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         });
 
         gameButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getBaseContext(), GameActivity.class);
+            Intent intent = new Intent(getBaseContext(), GameActivity.class).putExtra("DIFFICULTY", getSharedPreferences("GAME", MODE_PRIVATE).getInt("DIFFICULTY", DifficultyLevels.EASY.ordinal()));
             startActivity(intent);
         });
 
@@ -66,25 +66,24 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main_menu, menu);
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("GAME", MODE_PRIVATE);
-        String diff = prefs.getString("DIFFICULTY", null);
-        if (diff != null) {
-            Log.v("DIFFICULTY MENU", diff);
+        int diffValue = prefs.getInt("DIFFICULTY", -1);
+        if (diffValue != -1 && diffValue < 3) {
+            Log.v("DIFFICULTY MENU", String.valueOf(diffValue));
+            DifficultyLevels diff = DifficultyLevels.values()[diffValue];
             switch (diff) {
-                case DifficultyLevels.EASY:
+                case EASY:
                     menu.findItem(R.id.easy_difficulty_button).setChecked(true);
                     break;
-                case DifficultyLevels.MEDIUM:
+                case MEDIUM:
                     menu.findItem(R.id.medium_difficulty_button).setChecked(true);
                     break;
-                case DifficultyLevels.HARD:
+                case HARD:
                     menu.findItem(R.id.hard_difficulty_button).setChecked(true);
-                    break;
-                default:
                     break;
             }
         } else {
             menu.findItem(R.id.easy_difficulty_button).setChecked(true);
-            prefs.edit().putString("DIFFICULTY", DifficultyLevels.EASY).apply();
+            prefs.edit().putInt("DIFFICULTY", DifficultyLevels.EASY.ordinal()).apply();
         }
         return true;
     }
@@ -107,33 +106,35 @@ public class MainActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String toastText;
+        String toastText = null;
 
-        String levelToPut;
+        int levelToPut = -1;
         switch (item.getItemId()) {
             case R.id.easy_difficulty_button:
-                levelToPut = DifficultyLevels.EASY;
+                levelToPut = DifficultyLevels.EASY.ordinal();
                 toastText = "Easy mode selected";
                 break;
             case R.id.medium_difficulty_button:
-                levelToPut = DifficultyLevels.MEDIUM;
+                levelToPut = DifficultyLevels.MEDIUM.ordinal();
                 toastText = "Medium mode selected";
                 break;
             case R.id.hard_difficulty_button:
-                levelToPut = DifficultyLevels.HARD;
+                levelToPut = DifficultyLevels.HARD.ordinal();
                 toastText = "Hard mode selected";
                 break;
             case R.id.about_button:
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        if (levelToPut != -1) {
+            item.setChecked(true);
+            this.getSharedPreferences("GAME", MODE_PRIVATE).edit().putInt("DIFFICULTY", levelToPut).apply();
+            Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
+        }
 
-        item.setChecked(true);
-        this.getSharedPreferences("GAME", MODE_PRIVATE).edit().putString("DIFFICULTY", levelToPut).apply();
-
-        Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
 
         return true;
     }

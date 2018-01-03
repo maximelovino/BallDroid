@@ -2,6 +2,7 @@ package ch.hepia.lovino.balldroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,35 +10,26 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import ch.hepia.lovino.balldroid.controllers.GameController;
+import ch.hepia.lovino.balldroid.models.Ball;
+import ch.hepia.lovino.balldroid.models.DifficultyLevels;
 import ch.hepia.lovino.balldroid.views.GameSurfaceView;
 
 public class GameActivity extends Activity {
     private SensorManager sensorManager = null;
     private Sensor accelerometer = null;
     private final static String LOG_TAG = "GAME ACTIVITY";
-    private final SensorEventListener sensorListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            float x = event.values[0];
-            float y = event.values[1];
-            Log.v(LOG_TAG, "Values (" + x + "," + y + ")");
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            Log.v(LOG_TAG, "Accuracy changed");
-        }
-    };
+    private GameController controller;
+    private Ball ball;
+    private DifficultyLevels difficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GameSurfaceView view = new GameSurfaceView(this);
-        setContentView(view);
-        this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager != null) {
-            this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        }
+        Intent intent = getIntent();
+        this.difficulty = DifficultyLevels.values()[intent.getIntExtra("DIFFICULTY", DifficultyLevels.EASY.ordinal())];
+        this.controller = new GameController(this, this.difficulty);
+        setContentView(this.controller.getView());
     }
 
     /**
@@ -63,9 +55,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (this.sensorManager != null && this.accelerometer != null) {
-            this.sensorManager.registerListener(this.sensorListener, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+        controller.resumeGame();
     }
 
     /**
@@ -109,8 +99,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (this.sensorManager != null && this.accelerometer != null) {
-            this.sensorManager.unregisterListener(this.sensorListener, this.accelerometer);
-        }
+        controller.pauseGame();
     }
 }
