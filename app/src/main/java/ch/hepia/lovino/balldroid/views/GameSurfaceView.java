@@ -1,5 +1,6 @@
 package ch.hepia.lovino.balldroid.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,7 +33,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     }
 
-
     public int getSurfaceWidth() {
         return this.holder.getSurfaceFrame().width();
     }
@@ -53,8 +53,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        controller.updateBall();
         canvas.drawColor(Color.WHITE);
-        paint.setColor(Color.BLACK);
+        for (Object obj : controller.getObjects()) {
+            obj.draw(canvas, paint);
+        }
     }
 
     /**
@@ -110,6 +113,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
     }
 
+    @SuppressLint("WrongCall")
     private class DrawingThread extends Thread {
         private boolean keepDrawing = true;
 

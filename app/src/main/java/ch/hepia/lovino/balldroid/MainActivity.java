@@ -21,8 +21,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        highScoreButton = (Button) findViewById(R.id.high_score_button);
-        gameButton = (Button) findViewById(R.id.start_button);
+        highScoreButton = findViewById(R.id.high_score_button);
+        gameButton = findViewById(R.id.start_button);
 
         highScoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(getBaseContext(), HighScoreActivity.class);

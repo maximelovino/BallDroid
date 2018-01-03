@@ -5,28 +5,20 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public abstract class Object {
-    private int x;
-    private int y;
+    protected float x;
+    protected float y;
 
-    public Object(int x, int y) {
+    public Object(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     abstract public void draw(Canvas canvas, Paint paint);

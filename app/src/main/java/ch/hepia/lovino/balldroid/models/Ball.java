@@ -2,74 +2,74 @@ package ch.hepia.lovino.balldroid.models;
 
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-public class Ball {
-    private float x, y;
+public class Ball extends Object {
+    private static final int BALL_COLOR = Color.BLACK;
     private float speedX, speedY;
     private float maxSpeed;
+    private int gravity;
     private final float radius = 6.67f;
-    private static final float COMPENSATOR = 10.0f;
-    private static final float COMPENSATOR_REBOUND = 2f;
+    private static final float DRAG_FORCE = 10.0f;
+    private static final float DRAG_FORCE_REBOUND = 2f;
     private static final float INIT_X = 100;
     private static final float INIT_Y = 100;
     private static final float MAX_SPEED_SLOW = 15.0f;
     private static final float MAX_SPEED_MEDIUM = 25.0f;
     private static final float MAX_SPEED_FAST = 45.0f;
+    private static final int GRAVITY_EASY = 6;
+    private static final int GRAVITY_MEDIUM = 9;
+    private static final int GRAVITY_HARD = 15;
+
 
     public Ball(DifficultyLevels difficulty) {
-        this.x = INIT_X;
-        this.y = INIT_Y;
+        super(INIT_X, INIT_Y);
         switch (difficulty) {
             case EASY:
                 this.maxSpeed = MAX_SPEED_SLOW;
+                this.gravity = GRAVITY_EASY;
                 break;
             case MEDIUM:
                 this.maxSpeed = MAX_SPEED_MEDIUM;
+                this.gravity = GRAVITY_MEDIUM;
                 break;
             case HARD:
                 this.maxSpeed = MAX_SPEED_FAST;
+                this.gravity = GRAVITY_HARD;
                 break;
         }
         this.speedY = 0;
         this.speedX = 0;
+
     }
 
-    public float getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
+        paint.setColor(BALL_COLOR);
+        canvas.drawCircle(x, y, radius, paint);
     }
 
     public float getSpeedX() {
         return speedX;
     }
 
-    public void setSpeedX(float speedX) {
-        this.speedX = speedX;
-    }
-
     public float getSpeedY() {
         return speedY;
     }
 
-    public void setSpeedY(float speedY) {
-        this.speedY = speedY;
+    public void incrementSpeedX(float toAdd) {
+        this.speedX = Math.min(this.maxSpeed, this.speedX + toAdd / DRAG_FORCE);
+    }
+
+    public void incrementSpeedY() {
+        this.speedY = Math.min(this.maxSpeed, this.speedY + this.gravity / DRAG_FORCE);
+    }
+
+    public void updatePosition() {
+        this.x += speedX;
+        this.y += speedY;
     }
 
     public RectF getBoundingRect() {

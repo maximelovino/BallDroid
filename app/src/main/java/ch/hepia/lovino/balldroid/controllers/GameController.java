@@ -7,21 +7,26 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.util.ArrayList;
+
+import ch.hepia.lovino.balldroid.models.Ball;
 import ch.hepia.lovino.balldroid.models.DifficultyLevels;
+import ch.hepia.lovino.balldroid.models.Object;
 import ch.hepia.lovino.balldroid.views.GameSurfaceView;
 
 public class GameController {
     private Context context;
     private DifficultyLevels difficulty;
     private GameSurfaceView view;
-    private float xAccel, yAccel = 0;
+    private float xAccel = 0;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private ArrayList<Object> objects;
+    private Ball ball;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            xAccel = event.values[0];
-            yAccel = event.values[1];
+            xAccel = -event.values[0];
         }
 
         @Override
@@ -39,6 +44,20 @@ public class GameController {
             this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         }
+        this.ball = new Ball(this.difficulty);
+        this.objects = new ArrayList<>();
+        this.objects.add(ball);
+    }
+
+    public void updateBall() {
+        this.ball.incrementSpeedX(xAccel);
+        this.ball.incrementSpeedY();
+        this.ball.updatePosition();
+        //TODO handle collisions
+    }
+
+    public ArrayList<Object> getObjects() {
+        return objects;
     }
 
     public void resumeGame() {
