@@ -55,7 +55,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         super.onDraw(canvas);
         controller.updateBall();
         canvas.drawColor(Color.WHITE);
-        for (Object obj : controller.getObjects()) {
+        for (Object obj : controller.getGame().getObjects()) {
             obj.draw(canvas, paint);
         }
     }
@@ -71,6 +71,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
      */
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        controller.start();
         thread.keepDrawing = true;
         thread.start();
     }

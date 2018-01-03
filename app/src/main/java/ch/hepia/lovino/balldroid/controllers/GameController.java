@@ -7,11 +7,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import java.util.ArrayList;
-
 import ch.hepia.lovino.balldroid.models.Ball;
 import ch.hepia.lovino.balldroid.models.DifficultyLevels;
-import ch.hepia.lovino.balldroid.models.Object;
+import ch.hepia.lovino.balldroid.models.Game;
+import ch.hepia.lovino.balldroid.models.Platform;
 import ch.hepia.lovino.balldroid.views.GameSurfaceView;
 
 public class GameController {
@@ -21,7 +20,7 @@ public class GameController {
     private float xAccel = 0;
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private ArrayList<Object> objects;
+    private Game game;
     private Ball ball;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
@@ -45,8 +44,6 @@ public class GameController {
 
         }
         this.ball = new Ball(this.difficulty);
-        this.objects = new ArrayList<>();
-        this.objects.add(ball);
     }
 
     public void updateBall() {
@@ -54,10 +51,26 @@ public class GameController {
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
         //TODO handle collisions
+        if (this.ball.getX() > this.view.getSurfaceWidth() || this.ball.getX() <= 0) {
+            this.ball.reboundX();
+        }
+        if (this.ball.getY() > this.view.getSurfaceHeight()) {
+            this.ball.putToStart();
+        }
+
+        for (Platform p : this.game.getPlatforms()) {
+            if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
+                this.ball.reboundY();
+            }
+        }
     }
 
-    public ArrayList<Object> getObjects() {
-        return objects;
+    public void start() {
+        this.game = new Game(this.ball, this.view.getSurfaceWidth(), this.view.getSurfaceHeight());
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public void resumeGame() {

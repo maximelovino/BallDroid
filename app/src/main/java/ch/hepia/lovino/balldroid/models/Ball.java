@@ -51,12 +51,29 @@ public class Ball extends Object {
         canvas.drawCircle(x, y, radius, paint);
     }
 
-    public float getSpeedX() {
-        return speedX;
+    public void reboundX() {
+        this.speedX *= -1;
+        if (this.speedX < 0) {
+            this.speedX += DRAG_FORCE_REBOUND;
+        } else {
+            this.speedX -= DRAG_FORCE_REBOUND;
+        }
     }
 
-    public float getSpeedY() {
-        return speedY;
+    public void reboundY() {
+        this.speedY *= -1;
+        if (this.speedY < 0) {
+            this.speedY += DRAG_FORCE_REBOUND;
+        } else {
+            this.speedX -= DRAG_FORCE_REBOUND;
+        }
+    }
+
+    public void putToStart() {
+        this.x = INIT_X;
+        this.y = INIT_Y;
+        this.speedX = 0;
+        this.speedY = 0;
     }
 
     public void incrementSpeedX(float toAdd) {
