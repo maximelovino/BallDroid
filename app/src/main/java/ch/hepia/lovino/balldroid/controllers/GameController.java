@@ -51,7 +51,12 @@ public class GameController {
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
         //TODO handle collisions
-        if (this.ball.getX() > this.view.getSurfaceWidth() || this.ball.getX() <= 0) {
+        if (this.ball.getX() > (this.view.getSurfaceWidth() - this.ball.getRadius())) {
+            this.ball.setX(this.view.getSurfaceWidth() - this.ball.getRadius());
+            this.ball.reboundX();
+        }
+        if (this.ball.getX() < this.ball.getRadius()) {
+            this.ball.setX(this.ball.getRadius());
             this.ball.reboundX();
         }
         if (this.ball.getY() > this.view.getSurfaceHeight()) {
@@ -61,6 +66,15 @@ public class GameController {
         for (Platform p : this.game.getPlatforms()) {
             if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
                 this.ball.reboundY();
+                if (Math.abs(this.ball.getY() - p.getBoundingRect().bottom) < ball.getRadius()) {
+                    this.ball.setY(p.getBoundingRect().bottom + ball.getRadius());
+                } else if (Math.abs(this.ball.getY() - p.getBoundingRect().top) < ball.getRadius()) {
+                    this.ball.setY(p.getBoundingRect().top - ball.getRadius());
+                } else if (Math.abs(this.ball.getX() - p.getBoundingRect().left) < ball.getRadius()) {
+                    this.ball.setX(p.getBoundingRect().left - ball.getRadius());
+                } else if (Math.abs(this.ball.getX() - p.getBoundingRect().right) < ball.getRadius()) {
+                    this.ball.setX(p.getBoundingRect().right + ball.getRadius());
+                }
             }
         }
     }

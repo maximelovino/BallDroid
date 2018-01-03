@@ -45,6 +45,18 @@ public class Ball extends Object {
 
     }
 
+    public float getRadius() {
+        return radius;
+    }
+
+    public void setX(float newX) {
+        this.x = newX;
+    }
+
+    public void setY(float newY) {
+        this.y = newY;
+    }
+
     @Override
     public void draw(Canvas canvas, Paint paint) {
         paint.setColor(BALL_COLOR);

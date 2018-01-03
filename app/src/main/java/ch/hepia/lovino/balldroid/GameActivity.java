@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import ch.hepia.lovino.balldroid.controllers.GameController;
 import ch.hepia.lovino.balldroid.models.Ball;
@@ -30,6 +31,7 @@ public class GameActivity extends Activity {
         this.difficulty = DifficultyLevels.values()[intent.getIntExtra("DIFFICULTY", DifficultyLevels.EASY.ordinal())];
         this.controller = new GameController(this, this.difficulty);
         setContentView(this.controller.getView());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     /**
