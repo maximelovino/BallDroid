@@ -5,7 +5,7 @@ import android.graphics.RectF;
 
 public abstract class StaticObject extends Object {
     protected RectF boundingRect;
-    private float width, height;
+    protected float width, height;
 
     public StaticObject(float x, float y, float width, float height) {
         super(x, y);
@@ -14,6 +14,7 @@ public abstract class StaticObject extends Object {
 
         this.boundingRect = new RectF(x, y, x + width, y + height);
     }
+
 
     public RectF getBoundingRect() {
         return new RectF(boundingRect);

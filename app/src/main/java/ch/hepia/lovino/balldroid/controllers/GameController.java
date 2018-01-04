@@ -6,11 +6,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import ch.hepia.lovino.balldroid.models.Ball;
 import ch.hepia.lovino.balldroid.models.DifficultyLevels;
 import ch.hepia.lovino.balldroid.models.Game;
 import ch.hepia.lovino.balldroid.models.Platform;
+import ch.hepia.lovino.balldroid.models.PointArea;
 import ch.hepia.lovino.balldroid.views.GameSurfaceView;
 
 public class GameController {
@@ -50,7 +52,7 @@ public class GameController {
         this.ball.incrementSpeedX(xAccel);
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
-        //TODO handle collisions
+
         if (this.ball.getX() > (this.view.getSurfaceWidth() - this.ball.getRadius())) {
             this.ball.setX(this.view.getSurfaceWidth() - this.ball.getRadius());
             this.ball.reboundX();
@@ -59,10 +61,6 @@ public class GameController {
             this.ball.setX(this.ball.getRadius());
             this.ball.reboundX();
         }
-        if (this.ball.getY() > this.view.getSurfaceHeight()) {
-            this.ball.putToStart();
-        }
-
         for (Platform p : this.game.getPlatforms()) {
             if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
                 if (Math.abs(this.ball.getY() - p.getBoundingRect().bottom) < ball.getRadius()) {
@@ -78,6 +76,13 @@ public class GameController {
                     this.ball.reboundX();
                     this.ball.setX(p.getBoundingRect().right + ball.getRadius());
                 }
+            }
+        }
+
+        for (PointArea pointArea : this.game.getPointsAreas()) {
+            if (ball.getBoundingRect().intersect(pointArea.getBoundingRect())) {
+                Log.i("POINTS", String.valueOf(pointArea.getPoints()));
+                this.ball.putToStart();
             }
         }
     }
