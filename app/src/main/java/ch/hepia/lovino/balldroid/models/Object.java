@@ -1,9 +1,6 @@
 package ch.hepia.lovino.balldroid.models;
 
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
 public abstract class Object implements Drawable {
     protected float x;
     protected float y;

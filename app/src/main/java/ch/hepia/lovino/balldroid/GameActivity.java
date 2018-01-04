@@ -2,23 +2,16 @@ package ch.hepia.lovino.balldroid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import ch.hepia.lovino.balldroid.controllers.GameController;
 import ch.hepia.lovino.balldroid.models.Ball;
-import ch.hepia.lovino.balldroid.models.DifficultyLevels;
-import ch.hepia.lovino.balldroid.views.GameSurfaceView;
+import ch.hepia.lovino.balldroid.models.DifficultyLevel;
 
 public class GameActivity extends Activity {
     private SensorManager sensorManager = null;
@@ -26,13 +19,13 @@ public class GameActivity extends Activity {
     private final static String LOG_TAG = "GAME ACTIVITY";
     private GameController controller;
     private Ball ball;
-    private DifficultyLevels difficulty;
+    private DifficultyLevel difficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        this.difficulty = DifficultyLevels.values()[intent.getIntExtra("DIFFICULTY", DifficultyLevels.EASY.ordinal())];
+        this.difficulty = DifficultyLevel.values()[intent.getIntExtra("DIFFICULTY", DifficultyLevel.EASY.ordinal())];
         this.controller = new GameController(this, this.difficulty);
         setContentView(this.controller.getView());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import ch.hepia.lovino.balldroid.models.DifficultyLevels;
+import ch.hepia.lovino.balldroid.models.DifficultyLevel;
 
 public class MainActivity extends Activity {
     private Button gameButton;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         });
 
         gameButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getBaseContext(), GameActivity.class).putExtra("DIFFICULTY", getSharedPreferences("GAME", MODE_PRIVATE).getInt("DIFFICULTY", DifficultyLevels.EASY.ordinal()));
+            Intent intent = new Intent(getBaseContext(), GameActivity.class).putExtra("DIFFICULTY", getSharedPreferences("GAME", MODE_PRIVATE).getInt("DIFFICULTY", DifficultyLevel.EASY.ordinal()));
             startActivity(intent);
         });
 
@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
         int diffValue = prefs.getInt("DIFFICULTY", -1);
         if (diffValue != -1 && diffValue < 3) {
             Log.v("DIFFICULTY MENU", String.valueOf(diffValue));
-            DifficultyLevels diff = DifficultyLevels.values()[diffValue];
+            DifficultyLevel diff = DifficultyLevel.values()[diffValue];
             switch (diff) {
                 case EASY:
                     menu.findItem(R.id.easy_difficulty_button).setChecked(true);
@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
             }
         } else {
             menu.findItem(R.id.easy_difficulty_button).setChecked(true);
-            prefs.edit().putInt("DIFFICULTY", DifficultyLevels.EASY.ordinal()).apply();
+            prefs.edit().putInt("DIFFICULTY", DifficultyLevel.EASY.ordinal()).apply();
         }
         return true;
     }
@@ -111,15 +111,15 @@ public class MainActivity extends Activity {
         int levelToPut = -1;
         switch (item.getItemId()) {
             case R.id.easy_difficulty_button:
-                levelToPut = DifficultyLevels.EASY.ordinal();
+                levelToPut = DifficultyLevel.EASY.ordinal();
                 toastText = "Easy mode selected";
                 break;
             case R.id.medium_difficulty_button:
-                levelToPut = DifficultyLevels.MEDIUM.ordinal();
+                levelToPut = DifficultyLevel.MEDIUM.ordinal();
                 toastText = "Medium mode selected";
                 break;
             case R.id.hard_difficulty_button:
-                levelToPut = DifficultyLevels.HARD.ordinal();
+                levelToPut = DifficultyLevel.HARD.ordinal();
                 toastText = "Hard mode selected";
                 break;
             case R.id.about_button:

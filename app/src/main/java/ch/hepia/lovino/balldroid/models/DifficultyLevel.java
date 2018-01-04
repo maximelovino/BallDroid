@@ -1,7 +1,7 @@
 package ch.hepia.lovino.balldroid.models;
 
 
-public enum DifficultyLevels {
+public enum DifficultyLevel {
     EASY,
     MEDIUM,
     HARD

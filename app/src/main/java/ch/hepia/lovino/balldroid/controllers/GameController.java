@@ -1,7 +1,9 @@
 package ch.hepia.lovino.balldroid.controllers;
 
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,18 +12,21 @@ import android.util.Log;
 
 import ch.hepia.lovino.balldroid.GameActivity;
 import ch.hepia.lovino.balldroid.models.Ball;
-import ch.hepia.lovino.balldroid.models.DifficultyLevels;
+import ch.hepia.lovino.balldroid.models.DifficultyLevel;
 import ch.hepia.lovino.balldroid.models.Game;
 import ch.hepia.lovino.balldroid.models.Platform;
 import ch.hepia.lovino.balldroid.models.PointArea;
 import ch.hepia.lovino.balldroid.models.Score;
 import ch.hepia.lovino.balldroid.models.Time;
+import ch.hepia.lovino.balldroid.models.db.DBHelper;
 import ch.hepia.lovino.balldroid.views.GameSurfaceView;
+
+import static ch.hepia.lovino.balldroid.models.db.DBContract.ScoreEntry;
 
 public class GameController {
     private static final int TIMER_SECONDS = 60;
     private GameActivity context;
-    private DifficultyLevels difficulty;
+    private DifficultyLevel difficulty;
     private GameSurfaceView view;
     private float xAccel = 0;
     private SensorManager sensorManager;
@@ -45,7 +50,7 @@ public class GameController {
         }
     };
 
-    public GameController(GameActivity context, DifficultyLevels difficulty) {
+    public GameController(GameActivity context, DifficultyLevel difficulty) {
         this.context = context;
         this.difficulty = difficulty;
         this.view = new GameSurfaceView(context, this);
@@ -66,7 +71,8 @@ public class GameController {
         this.ball.incrementSpeedX(xAccel);
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
-        //TODO sometimes the ball is stuck to a wall, rebound should act a bit differently perhap
+        //TODO sometimes the ball is stuck to a wall, rebound should act a bit differently perhaps
+        //TODO sometimes at high speed, the ball goes through, we could check before moving if the movement will pass the wall
         if (this.ball.getX() > (this.view.getSurfaceWidth() - this.ball.getRadius())) {
             this.ball.setX(this.view.getSurfaceWidth() - this.ball.getRadius());
             this.ball.reboundX();
@@ -145,6 +151,17 @@ public class GameController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if (score.getScore() > 0)
+            saveScore();
         context.showEndOfGame(score.getScore());
+    }
+
+    private void saveScore() {
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ScoreEntry.COLUMN_DIFFICULTY, difficulty.ordinal());
+        values.put(ScoreEntry.COLUMN_SCORE, score.getScore());
+        db.insert(ScoreEntry.TABLE_NAME, null, values);
     }
 }

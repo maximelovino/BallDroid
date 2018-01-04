@@ -26,7 +26,7 @@ public class Game {
     private final static int MAX_VERTICAL_WALLS = 3;
     private final static int POINTS_AREA_COUNT = 8;
     private final static int POINTS_SEPARATORS_COUNT = POINTS_AREA_COUNT - 1;
-    private final static int MAX_POINTS = 99;
+    private final static int MAX_POINTS = 100;
 
     public Game(Ball ball, Score score, Time time, int screenWidth, int screenHeight) {
         this.ball = ball;

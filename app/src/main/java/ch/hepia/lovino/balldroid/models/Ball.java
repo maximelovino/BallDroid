@@ -13,7 +13,7 @@ public class Ball extends Object {
     private int gravity;
     private final float radius = 8f;
     private static final float DRAG_FORCE = 10.0f;
-    private static final float DRAG_FORCE_REBOUND = 4f;
+    private static final int DRAG_FORCE_REBOUND = 2;
     private static final float INIT_X = 100;
     private static final float INIT_Y = 100;
     private static final float MAX_SPEED_SLOW = 12.0f;
@@ -24,7 +24,7 @@ public class Ball extends Object {
     private static final int GRAVITY_HARD = 15;
 
 
-    public Ball(DifficultyLevels difficulty) {
+    public Ball(DifficultyLevel difficulty) {
         super(INIT_X, INIT_Y);
         switch (difficulty) {
             case EASY:
@@ -65,20 +65,12 @@ public class Ball extends Object {
 
     public void reboundX() {
         this.speedX *= -1;
-        if (this.speedX < 0) {
-            this.speedX += DRAG_FORCE_REBOUND;
-        } else {
-            this.speedX -= DRAG_FORCE_REBOUND;
-        }
+        this.speedX /= DRAG_FORCE_REBOUND;
     }
 
     public void reboundY() {
         this.speedY *= -1;
-        if (this.speedY < 0) {
-            this.speedY += DRAG_FORCE_REBOUND;
-        } else {
-            this.speedX -= DRAG_FORCE_REBOUND;
-        }
+        this.speedY /= DRAG_FORCE_REBOUND;
     }
 
     public void putToStart() {
