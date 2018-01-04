@@ -24,6 +24,8 @@ public class GameController {
     private Sensor accelerometer;
     private Game game;
     private Ball ball;
+    private int score;
+    private boolean paused = true;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -45,10 +47,12 @@ public class GameController {
             this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         }
+        this.score = 0;
         this.ball = new Ball(this.difficulty);
     }
 
     public void updateBall() {
+        if (paused) return;
         this.ball.incrementSpeedX(xAccel);
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
@@ -81,7 +85,7 @@ public class GameController {
 
         for (PointArea pointArea : this.game.getPointsAreas()) {
             if (ball.getBoundingRect().intersect(pointArea.getBoundingRect())) {
-                Log.i("POINTS", String.valueOf(pointArea.getPoints()));
+                score += pointArea.getPoints();
                 this.ball.putToStart();
             }
         }
@@ -97,13 +101,23 @@ public class GameController {
 
     public void resumeGame() {
         this.sensorManager.registerListener(this.sensorListener, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        paused = false;
     }
 
     public void pauseGame() {
         this.sensorManager.unregisterListener(this.sensorListener, this.accelerometer);
+        paused = true;
     }
 
     public GameSurfaceView getView() {
         return view;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 }

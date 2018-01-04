@@ -21,13 +21,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private DrawingThread thread;
     private Paint paint;
     private GameController controller;
+    private boolean started = false;
 
     public GameSurfaceView(Context context, GameController controller) {
         super(context);
         this.controller = controller;
         holder = getHolder();
         holder.addCallback(this);
-        thread = new DrawingThread();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         paint.setStyle(Paint.Style.FILL);
 
@@ -54,7 +54,12 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         controller.updateBall();
+        //Temporary for the score
+        int score = controller.getScore();
         canvas.drawColor(Color.WHITE);
+        paint.setTextSize(50);
+        paint.setColor(Color.BLACK);
+        canvas.drawText("Score " + String.valueOf(score), getSurfaceWidth() - 400, 100, paint);
         for (Object obj : controller.getGame().getObjects()) {
             obj.draw(canvas, paint);
         }
@@ -71,7 +76,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
      */
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        controller.start();
+        if (!started) {
+            controller.start();
+            started = true;
+        }
+        thread = new DrawingThread();
         thread.keepDrawing = true;
         thread.start();
     }
@@ -103,6 +112,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
      */
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        controller.pauseGame();
         thread.keepDrawing = false;
         boolean joined = false;
         while (!joined) {

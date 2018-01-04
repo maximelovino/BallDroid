@@ -103,4 +103,13 @@ public class GameActivity extends Activity {
         super.onPause();
         controller.pauseGame();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (controller.isPaused()) {
+            controller.resumeGame();
+        } else {
+            controller.pauseGame();
+        }
+    }
 }
