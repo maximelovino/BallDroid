@@ -16,6 +16,9 @@ public class Game {
     private final static int HORIZONTAL_GAP = 100;
     private final static int VERTICAL_GAP = 300;
     private final static int PLATFORM_HEIGHT = 20;
+    private final static int WALL_WIDTH = PLATFORM_HEIGHT;
+    private final static int WALL_HEIGHT = VERTICAL_GAP - PLATFORM_HEIGHT - 30;
+    private final static int MAX_VERTICAL_WALLS = 3;
 
     public Game(Ball ball, int screenWidth, int screenHeight) {
         this.ball = ball;
@@ -39,6 +42,15 @@ public class Game {
             platform = new Platform(endOfGap, i, screenWidth, PLATFORM_HEIGHT);
             this.objects.add(platform);
             this.platforms.add(platform);
+
+            //Now at each level of this, we want to add a random number of vertical walls, not using all the space
+            int wallCount = rnd.nextInt(MAX_VERTICAL_WALLS);
+            for (int j = 0; j < wallCount; j++) {
+                int horizontalStart = rnd.nextInt(screenWidth - WALL_WIDTH);
+                platform = new Platform(horizontalStart, i, WALL_WIDTH, WALL_HEIGHT);
+                this.objects.add(platform);
+                this.platforms.add(platform);
+            }
         }
     }
 

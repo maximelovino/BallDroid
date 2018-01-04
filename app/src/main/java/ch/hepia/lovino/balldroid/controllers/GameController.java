@@ -65,14 +65,17 @@ public class GameController {
 
         for (Platform p : this.game.getPlatforms()) {
             if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
-                this.ball.reboundY();
                 if (Math.abs(this.ball.getY() - p.getBoundingRect().bottom) < ball.getRadius()) {
+                    this.ball.reboundY();
                     this.ball.setY(p.getBoundingRect().bottom + ball.getRadius());
                 } else if (Math.abs(this.ball.getY() - p.getBoundingRect().top) < ball.getRadius()) {
+                    this.ball.reboundY();
                     this.ball.setY(p.getBoundingRect().top - ball.getRadius());
                 } else if (Math.abs(this.ball.getX() - p.getBoundingRect().left) < ball.getRadius()) {
+                    this.ball.reboundX();
                     this.ball.setX(p.getBoundingRect().left - ball.getRadius());
                 } else if (Math.abs(this.ball.getX() - p.getBoundingRect().right) < ball.getRadius()) {
+                    this.ball.reboundX();
                     this.ball.setX(p.getBoundingRect().right + ball.getRadius());
                 }
             }
