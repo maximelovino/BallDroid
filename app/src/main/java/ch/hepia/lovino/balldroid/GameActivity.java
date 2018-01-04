@@ -1,6 +1,7 @@
 package ch.hepia.lovino.balldroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -8,8 +9,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import ch.hepia.lovino.balldroid.controllers.GameController;
 import ch.hepia.lovino.balldroid.models.Ball;
@@ -32,6 +36,23 @@ public class GameActivity extends Activity {
         this.controller = new GameController(this, this.difficulty);
         setContentView(this.controller.getView());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    public void showEndOfGame(int score) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Game is over");
+        builder.setMessage("Your score is " + score + " points.");
+        builder.setCancelable(false);
+        builder.setPositiveButton("View high scores", (dialogInterface, i) -> {
+            startActivity(new Intent(this, HighScoreActivity.class));
+            finish();
+        });
+        builder.setNegativeButton("Go back home", ((dialogInterface, i) -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }));
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**
@@ -110,6 +131,7 @@ public class GameActivity extends Activity {
             controller.resumeGame();
         } else {
             controller.pauseGame();
+            Toast.makeText(this, R.string.pause_text, Toast.LENGTH_LONG).show();
         }
     }
 }

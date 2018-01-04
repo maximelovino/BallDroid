@@ -4,7 +4,7 @@ package ch.hepia.lovino.balldroid.models;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public abstract class Object {
+public abstract class Object implements Drawable {
     protected float x;
     protected float y;
 
@@ -20,6 +20,4 @@ public abstract class Object {
     public float getY() {
         return y;
     }
-
-    abstract public void draw(Canvas canvas, Paint paint);
 }

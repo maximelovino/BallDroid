@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import java.util.ArrayList;
 
 import ch.hepia.lovino.balldroid.controllers.GameController;
+import ch.hepia.lovino.balldroid.models.Drawable;
 import ch.hepia.lovino.balldroid.models.Object;
 
 
@@ -54,13 +55,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         controller.updateBall();
-        //Temporary for the score
-        int score = controller.getScore();
         canvas.drawColor(Color.WHITE);
-        paint.setTextSize(50);
-        paint.setColor(Color.BLACK);
-        canvas.drawText("Score " + String.valueOf(score), getSurfaceWidth() - 400, 100, paint);
-        for (Object obj : controller.getGame().getObjects()) {
+        for (Drawable obj : controller.getGame().getObjects()) {
             obj.draw(canvas, paint);
         }
     }
@@ -135,7 +131,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 try {
                     canvas = holder.lockCanvas();
                     synchronized (holder) {
-                        onDraw(canvas);
+                        try {
+                            onDraw(canvas);
+                        } catch (Exception e) {
+                            Log.e("Drawing thread", "Couldn't draw");
+                        }
                     }
                 } finally {
                     if (canvas != null) {
