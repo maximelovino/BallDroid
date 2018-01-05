@@ -96,4 +96,36 @@ public class Ball extends Object {
     public RectF getBoundingRect() {
         return new RectF(x - radius, y - radius, x + radius, y + radius);
     }
+
+    public BallDirection getDirection() {
+        if (this.speedX > 0) {
+            if (this.speedY > 0) {
+                return BallDirection.SE;
+            } else if (this.speedY < 0) {
+                return BallDirection.NE;
+            } else {
+                return BallDirection.E;
+            }
+        } else if (this.speedX < 0) {
+            if (this.speedY > 0) {
+                return BallDirection.SW;
+            } else if (this.speedY < 0) {
+                return BallDirection.NW;
+            } else {
+                return BallDirection.W;
+            }
+        } else {
+            if (this.speedY > 0) {
+                return BallDirection.S;
+            } else if (this.speedY < 0) {
+                return BallDirection.N;
+            } else {
+                return BallDirection.STILL;
+            }
+        }
+    }
+
+    public enum BallDirection {
+        N, NE, E, SE, S, SW, W, NW, STILL
+    }
 }

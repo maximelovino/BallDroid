@@ -40,7 +40,6 @@ public class GameController {
     private Time time;
     private boolean paused = true;
     private TimerThread timer;
-    private int lastStartTime = TIMER_SECONDS;
     private ArrayList<BonusMalus> bonusesToRemove;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
@@ -76,8 +75,6 @@ public class GameController {
         this.ball.incrementSpeedX(xAccel);
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
-        //TODO sometimes the ball is stuck to a wall, rebound should act a bit differently perhaps
-        //TODO sometimes at high speed, the ball goes through, we could check before moving if the movement will pass the wall
         if (this.ball.getX() > (this.view.getSurfaceWidth() - this.ball.getRadius())) {
             this.ball.setX(this.view.getSurfaceWidth() - this.ball.getRadius());
             this.ball.reboundX();
@@ -86,20 +83,40 @@ public class GameController {
             this.ball.setX(this.ball.getRadius());
             this.ball.reboundX();
         }
+        Ball.BallDirection direction = ball.getDirection();
         for (Platform p : this.game.getPlatforms()) {
             if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
-                if (Math.abs(this.ball.getY() - p.getBoundingRect().bottom) < ball.getRadius()) {
-                    this.ball.reboundY();
-                    this.ball.setY(p.getBoundingRect().bottom + ball.getRadius());
-                } else if (Math.abs(this.ball.getY() - p.getBoundingRect().top) < ball.getRadius()) {
-                    this.ball.reboundY();
-                    this.ball.setY(p.getBoundingRect().top - ball.getRadius());
-                } else if (Math.abs(this.ball.getX() - p.getBoundingRect().left) < ball.getRadius()) {
-                    this.ball.reboundX();
-                    this.ball.setX(p.getBoundingRect().left - ball.getRadius());
-                } else if (Math.abs(this.ball.getX() - p.getBoundingRect().right) < ball.getRadius()) {
-                    this.ball.reboundX();
-                    this.ball.setX(p.getBoundingRect().right + ball.getRadius());
+                switch (direction) {
+                    case N:
+                        reboundBottom(ball, p);
+                        break;
+                    case NE:
+                        reboundBottom(ball, p);
+                        reboundLeft(ball, p);
+                        break;
+                    case E:
+                        reboundLeft(ball, p);
+                        break;
+                    case SE:
+                        reboundTop(ball, p);
+                        reboundLeft(ball, p);
+                        break;
+                    case S:
+                        reboundTop(ball, p);
+                        break;
+                    case SW:
+                        reboundTop(ball, p);
+                        reboundRight(ball, p);
+                        break;
+                    case W:
+                        reboundRight(ball, p);
+                        break;
+                    case NW:
+                        reboundBottom(ball, p);
+                        reboundRight(ball, p);
+                        break;
+                    case STILL:
+                        break;
                 }
             }
         }
@@ -111,16 +128,43 @@ public class GameController {
             }
         }
 
-        this.bonusesToRemove.forEach(bonus -> game.removeBonus(bonus));
+        this.bonusesToRemove.forEach(game::removeBonus);
         this.bonusesToRemove.clear();
 
         for (BonusMalus bonus : this.game.getBonuses()) {
             if (ball.getBoundingRect().intersect(bonus.getBoundingRect())) {
-                Log.v("BONUS", "Hit a bonus");
+                Log.v("BONUS", "Hit a bonus of " + bonus.getSeconds());
                 bonusesToRemove.add(bonus);
-                //We have to remove the bonus/malus, otherwise it's hit multiple times
                 timer.addToTime(bonus.getSeconds());
             }
+        }
+    }
+
+    private void reboundTop(Ball ball, Platform p) {
+        if (Math.abs(this.ball.getY() - p.getBoundingRect().top) < ball.getRadius()) {
+            this.ball.reboundY();
+            this.ball.setY(p.getBoundingRect().top - ball.getRadius());
+        }
+    }
+
+    private void reboundBottom(Ball ball, Platform p) {
+        if (Math.abs(this.ball.getY() - p.getBoundingRect().bottom) < ball.getRadius()) {
+            this.ball.reboundY();
+            this.ball.setY(p.getBoundingRect().bottom + ball.getRadius());
+        }
+    }
+
+    private void reboundLeft(Ball ball, Platform p) {
+        if (Math.abs(this.ball.getX() - p.getBoundingRect().left) < ball.getRadius()) {
+            this.ball.reboundX();
+            this.ball.setX(p.getBoundingRect().left - ball.getRadius());
+        }
+    }
+
+    private void reboundRight(Ball ball, Platform p) {
+        if (Math.abs(this.ball.getX() - p.getBoundingRect().right) < ball.getRadius()) {
+            this.ball.reboundX();
+            this.ball.setX(p.getBoundingRect().right + ball.getRadius());
         }
     }
 
@@ -135,7 +179,6 @@ public class GameController {
     public void resumeGame() {
         this.sensorManager.registerListener(this.sensorListener, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         paused = false;
-        lastStartTime = this.time.getTimeRemaining();
         this.timer = new TimerThread(this.time.getTimeRemaining() * 1000, this);
         this.timer.start();
     }

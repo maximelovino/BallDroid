@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,9 @@ public class HighScoreActivity extends Activity {
         ArrayAdapter<HighScore> arrayAdapter = new ArrayAdapter<HighScore>(this, R.layout.score_list_item, R.id.score_list_item_text, scores);
         ListView list = findViewById(R.id.scores_list);
         list.setAdapter(arrayAdapter);
-        Log.v("SCORES", scores.toString());
+        if (scores.isEmpty()) {
+            Toast.makeText(this, R.string.no_highscores, Toast.LENGTH_LONG).show();
+        }
     }
 
     private ArrayList<HighScore> selectHighScores() {

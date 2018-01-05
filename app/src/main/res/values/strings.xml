@@ -14,4 +14,6 @@
     <string name="tab_text_3">Tab 3</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="no_highscores">No highscores yet</string>
+    <string name="about_text">This game has been created by Maxime Lovino as part of an Introduction to Android development class at Hepia. Most of the knowledge used for this project has been learned during the completion of this game.</string>
 </resources>
