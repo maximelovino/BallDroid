@@ -14,7 +14,8 @@ import java.util.ArrayList;
 
 import ch.hepia.lovino.balldroid.GameActivity;
 import ch.hepia.lovino.balldroid.models.Ball;
-import ch.hepia.lovino.balldroid.models.BonusMalus;
+import ch.hepia.lovino.balldroid.models.BallDirection;
+import ch.hepia.lovino.balldroid.models.Bonus;
 import ch.hepia.lovino.balldroid.models.DifficultyLevel;
 import ch.hepia.lovino.balldroid.models.Game;
 import ch.hepia.lovino.balldroid.models.Platform;
@@ -40,7 +41,7 @@ public class GameController {
     private Time time;
     private boolean paused = true;
     private TimerThread timer;
-    private ArrayList<BonusMalus> bonusesToRemove;
+    private ArrayList<Bonus> bonusesToRemove;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -62,7 +63,6 @@ public class GameController {
             this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         }
-        this.ball = new Ball(this.difficulty);
         this.bonusesToRemove = new ArrayList<>();
         this.timer = new TimerThread(10 * 1000, this);
     }
@@ -81,7 +81,7 @@ public class GameController {
             this.ball.setX(this.ball.getRadius());
             this.ball.reboundX();
         }
-        Ball.BallDirection direction = ball.getDirection();
+        BallDirection direction = ball.getDirection();
         for (Platform p : this.game.getPlatforms()) {
             if (ball.getBoundingRect().intersect(p.getBoundingRect())) {
                 switch (direction) {
@@ -129,7 +129,7 @@ public class GameController {
         this.bonusesToRemove.forEach(game::removeBonus);
         this.bonusesToRemove.clear();
 
-        for (BonusMalus bonus : this.game.getBonuses()) {
+        for (Bonus bonus : this.game.getBonuses()) {
             if (ball.getBoundingRect().intersect(bonus.getBoundingRect())) {
                 Log.v("BONUS", "Hit a bonus of " + bonus.getSeconds());
                 bonusesToRemove.add(bonus);
@@ -167,7 +167,8 @@ public class GameController {
     }
 
     public void start() {
-        this.game = new Game(this.ball, 0, TIMER_SECONDS, this.view.getSurfaceWidth(), this.view.getSurfaceHeight());
+        this.game = new Game(this.difficulty, 0, TIMER_SECONDS, this.view.getSurfaceWidth(), this.view.getSurfaceHeight());
+        this.ball = game.getBall();
         this.score = game.getScore();
         this.time = game.getTime();
         this.timer = new TimerThread(this.time.getTimeRemaining() * 1000, this);

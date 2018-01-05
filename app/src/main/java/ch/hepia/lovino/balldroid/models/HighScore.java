@@ -14,12 +14,4 @@ public class HighScore {
     public String toString() {
         return String.valueOf(score) + " - " + difficulty.toString();
     }
-
-    public int getScore() {
-        return score;
-    }
-
-    public DifficultyLevel getDifficulty() {
-        return difficulty;
-    }
 }

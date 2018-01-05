@@ -15,10 +15,6 @@ public class Score implements Drawable {
         this.score = score;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public void increment(int value) {
         this.score += value;
     }

@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class Platform extends StaticObject {
+public class Platform extends StaticGameObject {
     private final static int PLATFORM_COLOR = Color.BLUE;
 
     public Platform(float x, float y, float width, float height) {

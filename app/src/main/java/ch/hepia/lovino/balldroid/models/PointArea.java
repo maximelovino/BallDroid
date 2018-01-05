@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class PointArea extends StaticObject {
+public class PointArea extends StaticGameObject {
     private final int points;
     private static final int TEXT_COLOR = Color.BLACK;
     private static final int BG_COLOR = Color.YELLOW;

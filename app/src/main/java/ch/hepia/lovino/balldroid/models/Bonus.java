@@ -5,12 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class BonusMalus extends StaticObject {
-    private int seconds;
+public class Bonus extends StaticGameObject {
+    private final int seconds;
     private static final int COLOR_BONUS = Color.GREEN;
     private static final int COLOR_MALUS = Color.RED;
 
-    public BonusMalus(float x, float y, float width, float height, int seconds) {
+    public Bonus(float x, float y, float width, float height, int seconds) {
         super(x, y, width, height);
         this.seconds = seconds;
     }

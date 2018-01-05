@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private Ball ball;
-    private Score score;
-    private Time time;
+    private final Ball ball;
+    private final Score score;
+    private final Time time;
     //We use a linkedlist so we can addFirst everything but the ball, so the ball is always the last thing rendered
-    private LinkedList<Drawable> objects;
-    private ArrayList<Platform> platforms;
-    private ArrayList<PointArea> pointsAreas;
-    private ArrayList<BonusMalus> bonuses;
-    private Random rnd;
+    private final LinkedList<Drawable> objects;
+    private final ArrayList<Platform> platforms;
+    private final ArrayList<PointArea> pointsAreas;
+    private final ArrayList<Bonus> bonuses;
+    private final Random rnd;
     private final int screenWidth, screenHeight;
     private final static int ARRIVAL_ZONE_VERT_SPACE = 200;
     private final static int START_ZONE_VERT_SPACE = 200;
@@ -34,8 +34,8 @@ public class Game {
     private final static int BONUS_COUNT = 5;
     private final static int INFOS_DISTANCE_FROM_RIGHT = 400;
 
-    public Game(Ball ball, int initialScore, int initialTime, int screenWidth, int screenHeight) {
-        this.ball = ball;
+    public Game(DifficultyLevel difficulty, int initialScore, int initialTime, int screenWidth, int screenHeight) {
+        this.ball = new Ball(difficulty);
         this.score = new Score(screenWidth - INFOS_DISTANCE_FROM_RIGHT, initialScore);
         this.time = new Time(screenWidth - INFOS_DISTANCE_FROM_RIGHT, initialTime);
         this.screenWidth = screenWidth;
@@ -51,6 +51,10 @@ public class Game {
         generatePlatforms();
         generatePointsArea();
         generateBonuses();
+    }
+
+    public Ball getBall() {
+        return ball;
     }
 
     public Score getScore() {
@@ -106,7 +110,7 @@ public class Game {
             int seconds = rnd.nextInt(BONUS_MAX_SECONDS) + 1; //we go from 1 to 10;
             boolean negative = rnd.nextBoolean();
             seconds = negative ? -seconds : seconds;
-            BonusMalus bonus = new BonusMalus(x, y, BONUS_SIZE, BONUS_SIZE, seconds);
+            Bonus bonus = new Bonus(x, y, BONUS_SIZE, BONUS_SIZE, seconds);
             bonuses.add(bonus);
             objects.addFirst(bonus);
         }
@@ -124,11 +128,11 @@ public class Game {
         return pointsAreas;
     }
 
-    public ArrayList<BonusMalus> getBonuses() {
+    public ArrayList<Bonus> getBonuses() {
         return bonuses;
     }
 
-    public void removeBonus(BonusMalus bonus) {
+    public void removeBonus(Bonus bonus) {
         this.bonuses.remove(bonus);
         this.objects.remove(bonus);
     }

@@ -10,12 +10,8 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import ch.hepia.lovino.balldroid.controllers.GameController;
 import ch.hepia.lovino.balldroid.models.Drawable;
-import ch.hepia.lovino.balldroid.models.Object;
 
 
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {

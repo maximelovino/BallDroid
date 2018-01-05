@@ -6,12 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-public class Ball extends Object {
-    private static final int BALL_COLOR = Color.BLACK;
+public class Ball extends GameObject {
     private float speedX, speedY;
     private float maxSpeed;
     private int gravity;
     private final float radius = 8f;
+    private static final int BALL_COLOR = Color.BLACK;
     private static final float DRAG_FORCE = 10.0f;
     private static final int DRAG_FORCE_REBOUND = 2;
     private static final float INIT_X = 100;
@@ -125,7 +125,4 @@ public class Ball extends Object {
         }
     }
 
-    public enum BallDirection {
-        N, NE, E, SE, S, SW, W, NW, STILL
-    }
 }
