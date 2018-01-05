@@ -11,6 +11,7 @@ import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import ch.hepia.lovino.balldroid.controllers.GameController;
 import ch.hepia.lovino.balldroid.models.Drawable;

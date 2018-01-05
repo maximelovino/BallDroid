@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Platform extends StaticObject {
-    private final static int PLATFORM_COLOR = Color.RED;
+    private final static int PLATFORM_COLOR = Color.BLUE;
 
     public Platform(float x, float y, float width, float height) {
         super(x, y, width, height);

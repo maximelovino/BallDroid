@@ -10,8 +10,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import ch.hepia.lovino.balldroid.GameActivity;
 import ch.hepia.lovino.balldroid.models.Ball;
+import ch.hepia.lovino.balldroid.models.BonusMalus;
 import ch.hepia.lovino.balldroid.models.DifficultyLevel;
 import ch.hepia.lovino.balldroid.models.Game;
 import ch.hepia.lovino.balldroid.models.Platform;
@@ -38,6 +41,7 @@ public class GameController {
     private boolean paused = true;
     private TimerThread timer;
     private int lastStartTime = TIMER_SECONDS;
+    private ArrayList<BonusMalus> bonusesToRemove;
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -62,12 +66,13 @@ public class GameController {
         this.score = new Score(0);
         this.time = new Time(TIMER_SECONDS);
         this.ball = new Ball(this.difficulty);
+        this.bonusesToRemove = new ArrayList<>();
         this.timer = new TimerThread(10 * 1000, this);
     }
 
     public void updateBall() {
         if (paused) return;
-        this.time.setTimeRemaining(lastStartTime - (int) timer.getTime() / 1000);
+        this.time.setTimeRemaining((int) timer.getRemainingTime() / 1000);
         this.ball.incrementSpeedX(xAccel);
         this.ball.incrementSpeedY();
         this.ball.updatePosition();
@@ -103,6 +108,18 @@ public class GameController {
             if (ball.getBoundingRect().intersect(pointArea.getBoundingRect())) {
                 score.increment(pointArea.getPoints());
                 this.ball.putToStart();
+            }
+        }
+
+        this.bonusesToRemove.forEach(bonus -> game.removeBonus(bonus));
+        this.bonusesToRemove.clear();
+
+        for (BonusMalus bonus : this.game.getBonuses()) {
+            if (ball.getBoundingRect().intersect(bonus.getBoundingRect())) {
+                Log.v("BONUS", "Hit a bonus");
+                bonusesToRemove.add(bonus);
+                //We have to remove the bonus/malus, otherwise it's hit multiple times
+                timer.addToTime(bonus.getSeconds());
             }
         }
     }

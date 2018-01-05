@@ -14,6 +14,7 @@ public class Game {
     private LinkedList<Drawable> objects;
     private ArrayList<Platform> platforms;
     private ArrayList<PointArea> pointsAreas;
+    private ArrayList<BonusMalus> bonuses;
     private Random rnd;
     private final int screenWidth, screenHeight;
     private final static int ARRIVAL_ZONE_VERT_SPACE = 200;
@@ -28,6 +29,10 @@ public class Game {
     private final static int POINTS_SEPARATORS_COUNT = POINTS_AREA_COUNT - 1;
     private final static int MAX_POINTS = 100;
 
+    private final static int BONUS_SIZE = 30;
+    private final static int BONUS_MAX_SECONDS = 10;
+    private final static int BONUS_COUNT = 5;
+
     public Game(Ball ball, Score score, Time time, int screenWidth, int screenHeight) {
         this.ball = ball;
         this.score = score;
@@ -37,12 +42,14 @@ public class Game {
         this.objects = new LinkedList<>();
         this.platforms = new ArrayList<>();
         this.pointsAreas = new ArrayList<>();
+        this.bonuses = new ArrayList<>();
         this.objects.add(ball);
         this.objects.addFirst(score);
         this.objects.addFirst(time);
         this.rnd = new Random();
         generatePlatforms();
         generatePointsArea();
+        generateBonuses();
     }
 
     private void generatePointsArea() {
@@ -83,6 +90,19 @@ public class Game {
         }
     }
 
+    private void generateBonuses() {
+        for (int i = 0; i < BONUS_COUNT; i++) {
+            int x = rnd.nextInt(screenWidth - BONUS_SIZE);
+            int y = rnd.nextInt(screenHeight - START_ZONE_VERT_SPACE - ARRIVAL_ZONE_VERT_SPACE - BONUS_SIZE) + START_ZONE_VERT_SPACE;
+            int seconds = rnd.nextInt(BONUS_MAX_SECONDS) + 1; //we go from 1 to 10;
+            boolean negative = rnd.nextBoolean();
+            seconds = negative ? -seconds : seconds;
+            BonusMalus bonus = new BonusMalus(x, y, BONUS_SIZE, BONUS_SIZE, seconds);
+            bonuses.add(bonus);
+            objects.addFirst(bonus);
+        }
+    }
+
     public List<Drawable> getObjects() {
         return objects;
     }
@@ -93,5 +113,14 @@ public class Game {
 
     public List<PointArea> getPointsAreas() {
         return pointsAreas;
+    }
+
+    public ArrayList<BonusMalus> getBonuses() {
+        return bonuses;
+    }
+
+    public void removeBonus(BonusMalus bonus) {
+        this.bonuses.remove(bonus);
+        this.objects.remove(bonus);
     }
 }

@@ -31,8 +31,12 @@ public class TimerThread extends Thread {
         this.run = false;
     }
 
-    public long getTime() {
-        return currentTime - startTime;
+    public long getRemainingTime() {
+        return timerMs - (currentTime - startTime);
+    }
+
+    public void addToTime(int value) {
+        this.timerMs += value * 1000;
     }
 
     @Override
