@@ -62,8 +62,6 @@ public class GameController {
             this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         }
-        this.score = new Score(0);
-        this.time = new Time(TIMER_SECONDS);
         this.ball = new Ball(this.difficulty);
         this.bonusesToRemove = new ArrayList<>();
         this.timer = new TimerThread(10 * 1000, this);
@@ -169,7 +167,11 @@ public class GameController {
     }
 
     public void start() {
-        this.game = new Game(this.ball, score, time, this.view.getSurfaceWidth(), this.view.getSurfaceHeight());
+        this.game = new Game(this.ball, 0, TIMER_SECONDS, this.view.getSurfaceWidth(), this.view.getSurfaceHeight());
+        this.score = game.getScore();
+        this.time = game.getTime();
+        this.timer = new TimerThread(this.time.getTimeRemaining() * 1000, this);
+        this.timer.start();
     }
 
     public Game getGame() {
@@ -179,8 +181,10 @@ public class GameController {
     public void resumeGame() {
         this.sensorManager.registerListener(this.sensorListener, this.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         paused = false;
-        this.timer = new TimerThread(this.time.getTimeRemaining() * 1000, this);
-        this.timer.start();
+        if (this.time != null) {
+            this.timer = new TimerThread(this.time.getTimeRemaining() * 1000, this);
+            this.timer.start();
+        }
     }
 
     public void pauseGame() {

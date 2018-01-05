@@ -32,11 +32,12 @@ public class Game {
     private final static int BONUS_SIZE = 30;
     private final static int BONUS_MAX_SECONDS = 10;
     private final static int BONUS_COUNT = 5;
+    private final static int INFOS_DISTANCE_FROM_RIGHT = 400;
 
-    public Game(Ball ball, Score score, Time time, int screenWidth, int screenHeight) {
+    public Game(Ball ball, int initialScore, int initialTime, int screenWidth, int screenHeight) {
         this.ball = ball;
-        this.score = score;
-        this.time = time;
+        this.score = new Score(screenWidth - INFOS_DISTANCE_FROM_RIGHT, initialScore);
+        this.time = new Time(screenWidth - INFOS_DISTANCE_FROM_RIGHT, initialTime);
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.objects = new LinkedList<>();
@@ -50,6 +51,14 @@ public class Game {
         generatePlatforms();
         generatePointsArea();
         generateBonuses();
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
+    public Time getTime() {
+        return time;
     }
 
     private void generatePointsArea() {

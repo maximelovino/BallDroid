@@ -7,8 +7,11 @@ import android.graphics.Paint;
 
 public class Time implements Drawable {
     private int timeRemaining;
+    private static final int VERTICAL_POSITION = 175;
+    private final int xPosition;
 
-    public Time(int timeRemaining) {
+    public Time(int xPosition, int timeRemaining) {
+        this.xPosition = xPosition;
         this.timeRemaining = timeRemaining;
     }
 
@@ -22,9 +25,8 @@ public class Time implements Drawable {
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
-        //TODO hardcoded position is not good
         paint.setTextSize(50);
         paint.setColor(Color.BLACK);
-        canvas.drawText("Time " + String.valueOf(timeRemaining), 1000, 175, paint);
+        canvas.drawText("Time " + String.valueOf(timeRemaining), xPosition, VERTICAL_POSITION, paint);
     }
 }

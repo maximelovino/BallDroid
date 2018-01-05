@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Score implements Drawable {
+    private static final int VERTICAL_POSITION = 100;
     private int score;
+    private final int xPosition;
 
-    public Score(int score) {
+    public Score(int xPosition, int score) {
+        this.xPosition = xPosition;
         this.score = score;
     }
 
@@ -26,9 +29,8 @@ public class Score implements Drawable {
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
-        //TODO hardcoded position is not good
         paint.setTextSize(50);
         paint.setColor(Color.BLACK);
-        canvas.drawText("Score " + String.valueOf(score), 1000, 100, paint);
+        canvas.drawText("Score " + String.valueOf(score), xPosition, VERTICAL_POSITION, paint);
     }
 }
