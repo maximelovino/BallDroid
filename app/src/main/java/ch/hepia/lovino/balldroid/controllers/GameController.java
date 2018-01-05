@@ -67,7 +67,7 @@ public class GameController {
         this.timer = new TimerThread(10 * 1000, this);
     }
 
-    public void updateBall() {
+    public void update() {
         if (paused) return;
         this.time.setTimeRemaining((int) timer.getRemainingTime() / 1000);
         this.ball.incrementSpeedX(xAccel);
@@ -210,7 +210,6 @@ public class GameController {
     public void endGame() {
         Log.w("GAME", "Game is over");
         pauseGame();
-        //if we join here, since this function is called from timer thread, we would be joining the thread running this
         try {
             this.timer.join();
         } catch (InterruptedException e) {
