@@ -66,11 +66,24 @@ Tous les éléments du plateau sont placés dans deux listes à chaque fois, une
 \subsection{Le rendu - View}
 Je ne vais pas m'attarder plus en profondeur sur la partie vue, car elle suit ce qui était expliqué dans le PDF fourni, on a donc une \verb+GameSurfaceView+ avec un thread d'affichage \verb+DrawingThread+ qui à chaque frame prend un lock sur le canvas et appelle \verb+onDraw+. Dans cette méthode, on appelle la méthode pour que le moteur effectue les mouvements et ensuite on récupère les éléments \verb+Drawable+ à afficher et on appelle \verb+Draw()+ sur ceux-ci.
 \subsection{Le moteur de jeu - Controller}
+Le moteur de jeu est la partie qui va récupérer les valeurs de l'accéléromètre (seulement sur l'axe X) et appliquer les mouvements à la balle à chaque frame, elle va aussi appeler la création du jeu, lancer et mettre en pause le timer lorsque le jeu se met en pause et gérer les collisions et les points.
 \subsubsection{La fonction update}
+La fonction \verb+update+ est la fonction principale du moteur de jeu. Dans cette fonction, on va, si le jeu n'est pas en pause, augmenter la vitesse de la balle en fonction de l'accélération de l'accéléromètre sur l'axe X et de la gravité sur l'axe Y et ensuite mettre à jour sa position d'une unité par rapport à sa vitesse en appelant les fonctions correspondantes dans le modèle.
 \subsubsection{Les collisions en fonction de la direction de la balle}
-\subsubsection{Prise de bonus}
-\subsubsection{La gestion des pauses}
-\subsubsection{Timer thread et fin de jeu}
-\section{Conclusion}
+A partir de là, nous devons gérer les collisions de la balle, tout d'abord avec les bords de l'écran à gauche et à droite, en replaçant la balle au bord de l'écran et en inversant sa vitesse. \\
 
+Ensuite il y a la gestion des collisions avec les plateformes. Pour cela, je prends la direction de la balle, et ensuite on parcourt toutes les plateformes et on utilise la fonction \verb+intersect+ pour vérifier s'il y a une intersection avec la plateforme. Ensuite, en fonction de la direction de la balle, en cas d'intersection, il faudra faire rebondir la balle que dans certaines directions. C'est-à-dire que par exemple, une balle avec direction NE ne peut rebondir que sur le bas et la gauche d'une plateforme, même si elle pourrait satisfaire la condition de rebond sur le haut par rapport à sa position, mais cela n'aurait pas de sens compte tenu de sa direction. Cela permet donc de gérer d'une meilleure façon les collisions avec les bords et les coins des plateformes dans ce cas, car on ne fait que des rebonds logiques du point de vue physique.
+\subsubsection{Zones d'arrivée}
+Ensuite, on parcourt toutes les zones d'arrivée et en cas d'intersection avec une zone d'arrivée, on augmente le score par rapport aux points de celle-ci et on replace la balle à la position de départ.
+\subsubsection{Prise de bonus}
+Pour les bonus, on parcourt tous les bonus et en cas d'intersection, on applique le temps gagné ou perdu au temps restant et on met le bonus dans la liste \verb+bonusesToRemove+, à la prochaine frame, le bonus sera enlevé de la partie. Cela nous évite de faire disparaître un bonus avant même de le toucher, ce qui provoque un petit glitch graphiquement. A noter, l'utilisation d'une petite touche de programmation fonctionnelle en Java 8 pour le traitement de tous les bonus à enlever en utilisant:
+\begin{verbatim}
+this.bonusesToRemove.forEach(game::removeBonus);
+\end{verbatim}
+\subsubsection{La gestion des pauses}
+La pause est géré dans l'activité de jeu, sur pression du bouton Back. L'activité intercepte cette pression et appelle \verb+pauseGame()+ sur le jeu qui va arrêter de récupérer les données de l'accéléromètre, arrêter le timer et mettre en pause les mouvements via un booléen. Ensuite, à la pression suivante de la touche Back, on va remettre en fonction le listener, relancer le timer avec la valeur restante du temps et débloquer les mouvements.
+\subsubsection{Timer thread et fin de jeu}
+Le timer est géré par un thread de timer qui est géré par le moteur de jeu. Lors que le timer arrive au bout, on utilise un Handler pour lancer la fonction \verb+endGame+ sur le thread principal (aussi appelé UIThread) qui va join le thread Timer, arrêter le jeu, enregistrer le score et notifier l'activité qui va afficher un AlertDialog avec le score de l'utilisateur et des options pour retourner à la page d'accueil ou à la vue des high scores. A noter qu'après avoir lancé une de ces deux activités, il est très important d'appeler \verb+finish()+ après le \verb+startActivity(...)+ depuis l'activité de jeu pour détruire celle-ci, autrement on pourrait retourner au jeu en appuyant sur la touche Back.
+\section{Conclusion et remarques}
+En conclusion, ce jeu m'a permis de me familiariser de plus en plus avec le développement sur Android et principalement avec les \verb+SurfaceView+ que je n'avais jamais utilisé auparavant. Je trouve par contre que le cours que nous avons eu jusqu'à maintenant n'était pas vraiment suffisant pour réaliser le TP, surtout du point de vue de la structure du TP et des interactions. Le gap entre les exercices et ce TP était un peu trop conséquent, du coup une grande partie de l'apprentissage nécessaire pour ce TP a été fait durant la réalisation de celui-ci. A noter que je touche au développement Android depuis déjà deux ans (pas de jeux) ainsi que pour mon projet de semestre et que donc j'avais déjà pas mal de bases, mais cela ne m'a pas empêché de devoir m'informer et apprendre avec les documentations etc.
 \end{document}
